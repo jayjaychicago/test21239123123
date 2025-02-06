@@ -4,6 +4,7 @@ import { APIResource } from '../resource';
 import { APIPromise } from '../api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
+import { path } from '../internal/utils/path';
 
 export class Cars extends APIResource {
   /**
@@ -17,14 +18,14 @@ export class Cars extends APIResource {
    * Get car details
    */
   retrieve(carID: number, options?: RequestOptions): APIPromise<Car> {
-    return this._client.get(`/cars/${carID}`, options);
+    return this._client.get(path`/cars/${carID}`, options);
   }
 
   /**
    * Update car details
    */
   update(carID: number, body: CarUpdateParams, options?: RequestOptions): APIPromise<Car> {
-    return this._client.put(`/cars/${carID}`, { body, ...options });
+    return this._client.put(path`/cars/${carID}`, { body, ...options });
   }
 
   /**
@@ -38,7 +39,7 @@ export class Cars extends APIResource {
    * Delete a car
    */
   delete(carID: number, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(`/cars/${carID}`, {
+    return this._client.delete(path`/cars/${carID}`, {
       ...options,
       headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
     });
