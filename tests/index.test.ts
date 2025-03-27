@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from 'test21239123123/api-promise';
+import { APIPromise } from 'test21239123123/core/api-promise';
 
 import util from 'node:util';
 import Test21239123123 from 'test21239123123';

@@ -1,4 +1,4 @@
-import { Test21239123123Error } from '../../error';
+import { Test21239123123Error } from '../../core/error';
 
 /**
  * Percent-encode everything that isn't safe to have in a path without encoding safe chars.
