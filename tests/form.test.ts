@@ -1,5 +1,5 @@
 import { multipartFormRequestOptions, createForm } from 'test21239123123/internal/uploads';
-import { toFile } from 'test21239123123/uploads';
+import { toFile } from 'test21239123123/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {
