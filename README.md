@@ -6,16 +6,16 @@ This library provides convenient access to the Test21239123123 REST API from ser
 
 The REST API documentation can be found on [docs.test21239123123.com](https://docs.test21239123123.com). The full API of this library can be found in [api.md](api.md).
 
-It is generated with [Stainless](https://www.stainlessapi.com/).
+It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
 ```sh
-npm install git+ssh://git@github.com:stainless-sdks/test21239123123-typescript.git
+npm install git+ssh://git@github.com:jayjaychicago/test21239123123.git
 ```
 
 > [!NOTE]
-> Once this package is [published to npm](https://app.stainlessapi.com/docs/guides/publish), this will become: `npm install test21239123123`
+> Once this package is [published to npm](https://app.stainless.com/docs/guides/publish), this will become: `npm install test21239123123`
 
 ## Usage
 
@@ -139,8 +139,10 @@ Note that requests which time out will be [retried twice by default](#retries).
 ### Accessing raw Response data (e.g., headers)
 
 The "raw" `Response` returned by `fetch()` can be accessed through the `.asResponse()` method on the `APIPromise` type that all methods return.
+This method returns as soon as the headers for a successful response are received and does not consume the response body, so you are free to write custom parsing or streaming logic.
 
 You can also use the `.withResponse()` method to get the raw `Response` along with the parsed data.
+Unlike `.asResponse()` this method consumes the body, returning once it is parsed.
 
 <!-- prettier-ignore -->
 ```ts
@@ -155,6 +157,59 @@ const { data: car, response: raw } = await client.cars
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));
 console.log(car.id);
+```
+
+### Logging
+
+> [!IMPORTANT]
+> All log messages are intended for debugging only. The format and content of log messages
+> may change between releases.
+
+#### Log levels
+
+The log level can be configured in two ways:
+
+1. Via the `TEST21239123123_LOG` environment variable
+2. Using the `logLevel` client option (overrides the environment variable if set)
+
+```ts
+import Test21239123123 from 'test21239123123';
+
+const client = new Test21239123123({
+  logLevel: 'debug', // Show all log messages
+});
+```
+
+Available log levels, from most to least verbose:
+
+- `'debug'` - Show debug messages, info, warnings, and errors
+- `'info'` - Show info messages, warnings, and errors
+- `'warn'` - Show warnings and errors (default)
+- `'error'` - Show only errors
+- `'off'` - Disable all logging
+
+At the `'debug'` level, all HTTP requests and responses are logged, including headers and bodies.
+Some authentication-related headers are redacted, but sensitive data in request and response bodies
+may still be visible.
+
+#### Custom logger
+
+By default, this library logs to `globalThis.console`. You can also provide a custom logger.
+Most logging libraries are supported, including [pino](https://www.npmjs.com/package/pino), [winston](https://www.npmjs.com/package/winston), [bunyan](https://www.npmjs.com/package/bunyan), [consola](https://www.npmjs.com/package/consola), [signale](https://www.npmjs.com/package/signale), and [@std/log](https://jsr.io/@std/log). If your logger doesn't work, please open an issue.
+
+When providing a custom logger, the `logLevel` option still controls which messages are emitted, messages
+below the configured level will not be sent to your logger.
+
+```ts
+import Test21239123123 from 'test21239123123';
+import pino from 'pino';
+
+const logger = pino();
+
+const client = new Test21239123123({
+  logger: logger.child({ name: 'Test21239123123' }),
+  logLevel: 'debug', // Send all messages to pino, allowing it to filter
+});
 ```
 
 ### Making custom/undocumented requests
@@ -216,32 +271,11 @@ globalThis.fetch = fetch;
 Or pass it to the client:
 
 ```ts
+import Test21239123123 from 'test21239123123';
 import fetch from 'my-fetch';
 
 const client = new Test21239123123({ fetch });
 ```
-
-### Logging and middleware
-
-You may also provide a custom `fetch` function when instantiating the client,
-which can be used to inspect or alter the `Request` or `Response` before/after each request:
-
-```ts
-import { fetch } from 'undici'; // as one example
-import Test21239123123 from 'test21239123123';
-
-const client = new Test21239123123({
-  fetch: async (url: RequestInfo, init?: RequestInit): Promise<Response> => {
-    console.log('About to make a request', url, init);
-    const response = await fetch(url, init);
-    console.log('Got response', response);
-    return response;
-  },
-});
-```
-
-Note that if given a `TEST21239123123_LOG=debug` environment variable, this library will log all requests and responses automatically.
-This is intended for debugging purposes only and may change in the future without notice.
 
 ### Fetch options
 
@@ -313,7 +347,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/test21239123123-typescript/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/jayjaychicago/test21239123123/issues) with questions, bugs, or suggestions.
 
 ## Requirements
 
